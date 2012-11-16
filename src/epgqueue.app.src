@@ -1,0 +1,12 @@
+{application, epgqueue,
+ [
+  {description, "epgsql queue"},
+  {vsn, "0.1"},
+  {registered, [epgqueue]},
+  {applications, [
+                  kernel,
+                  stdlib
+                 ]},
+  {mod, { epgqueue_app, []}},
+  {env, []}
+ ]}.
