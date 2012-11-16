@@ -79,7 +79,7 @@ handle_call(Req, _From, State) ->
     {reply, {error, {badreq, Req}}, State}.
 
 handle_cast({publish, Queue, {Name, Data}}, #state{pool=Pool}=State) ->
-    Now = {datetime, {date(), time()}},
+    Now = {datetime, date(), time()},
     Record = [{evtqueue, Queue}, {evtname, Name},
               {evtdata, Data}, {evtstatus, false}, 
               {evttime, Now}],
