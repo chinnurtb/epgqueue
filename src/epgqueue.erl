@@ -83,9 +83,7 @@ handle_cast({publish, Queue, {Name, Data}}, #state{pool=Pool}=State) ->
     Record = [{evtqueue, Queue}, {evtname, Name},
               {evtdata, Data}, {evtstatus, false}, 
               {evttime, Now}],
-    io:format("~p", [epgsql_builder:insert(queue_events, Record)]),
-    Res = epgsql:insert(Pool, queue_events, Record),
-    io:format("~p", [Res]),
+    epgsql:insert(Pool, queue_events, Record),
     {noreply, State};
     
 handle_cast(Msg, State) ->
@@ -109,7 +107,7 @@ handle_info({tick, Tick, Queue}, #state{pool = Pool, subscribers = Subscribers}=
             time=get_value(evttime, Event)}),
         get_value(evtid, Event)
     end, Events),
-    epgsql:update(Pool, queue_events, [{evtstatus, true}], {'in', id, Ids}),
+    epgsql:update(Pool, queue_events, [{evtstatus, true}], {'in', evtid, Ids}),
     erlang:send_after(Tick*1000, self(), {tick, Tick, Queue}),
     {noreply, State};
 
