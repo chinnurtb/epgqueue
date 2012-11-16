@@ -48,6 +48,6 @@ epgqueue:unsubscribe(Queue, PID).
 Event
 =====
 
-#pgqevent{name=Name, data=Data, time=Time}
+pgqevent{name=Name, data=Data, time=Time}
 
 
