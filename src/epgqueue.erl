@@ -17,7 +17,8 @@
 -export([start_link/0,
         publish/2,
         subscribe/2,
-        unsubscribe/2]).
+        unsubscribe/2,
+        clear/1]).
 
 -behavior(gen_server).
 
@@ -43,6 +44,9 @@ subscribe(Queue, Pid) when is_atom(Queue) and is_pid(Pid) ->
 
 unsubscribe(Queue, Pid) when is_atom(Queue) and is_pid(Pid) ->
     gen_server:call(?MODULE, {unsubscribe, Queue, Pid}).
+
+clear(Queue) when is_atom(Queue) ->
+    gen_server:call(?MODULE, {clear, Queue}).
 
 init([]) ->
     {ok, Pool} = application:get_env(pool),
@@ -74,6 +78,10 @@ handle_call({unsubscribe, Queue, Pid}, _From,
     false ->
         {reply, false, State}
     end;
+
+handle_call({clear, Queue}, _From, State) ->
+    eqgsql:delete(Pool, queue_events, {evtqueue, Queue}),
+    {reply, ok, State};
 
 handle_call(Req, _From, State) ->
     {reply, {error, {badreq, Req}}, State}.
