@@ -79,7 +79,7 @@ handle_call({unsubscribe, Queue, Pid}, _From,
         {reply, false, State}
     end;
 
-handle_call({clear, Queue}, _From, State) ->
+handle_call({clear, Queue}, _From, #state{pool=Pool}=State) ->
     eqgsql:delete(Pool, queue_events, {evtqueue, Queue}),
     {reply, ok, State};
 
