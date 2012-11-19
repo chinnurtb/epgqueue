@@ -115,7 +115,10 @@ handle_info({tick, Tick, Queue}, #state{pool = Pool, subscribers = Subscribers}=
             time=get_value(evttime, Event)}),
         get_value(evtid, Event)
     end, Events),
-    epgsql:update(Pool, queue_events, [{evtstatus, true}], {'in', evtid, Ids}),
+    case Ids of
+    [] -> ignore;
+    _ -> epgsql:update(Pool, queue_events, [{evtstatus, true}], {'in', evtid, Ids})
+    end,
     erlang:send_after(Tick*1000, self(), {tick, Tick, Queue}),
     {noreply, State};
 
