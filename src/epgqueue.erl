@@ -161,7 +161,9 @@ find(Queue, Subscribers) ->
 find(_Queue, [], Acc) ->
     Acc;
 find(Queue, [#subscriber{queue=Queue}=Sub|Subscribers], Acc) ->
-    find(Queue, Subscribers, [Sub|Acc]).
+    find(Queue, Subscribers, [Sub|Acc]);
+find(Queue, [_|Subscribers], Acc) ->
+    find(Queue, Subscribers, Acc).
 
 notify(Subscribers, Event) ->
     [Pid ! Event || #subscriber{spid = Pid} <- Subscribers].
